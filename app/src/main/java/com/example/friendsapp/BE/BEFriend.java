@@ -1,11 +1,21 @@
 package com.example.friendsapp.BE;
 
-import java.util.Date;
+
+import java.sql.Date;
 
 public class BEFriend {
     String name, address, email, phoneNumber, website;
     Date birthdate;
 
+    public BEFriend(String name, String address, String email, String phoneNumber, String website, Date birthdate) {
+
+        this.name = name;
+        this.address = address;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.website = website;
+        this.birthdate = birthdate;
+    }
 
     public String getName() {
         return name;
