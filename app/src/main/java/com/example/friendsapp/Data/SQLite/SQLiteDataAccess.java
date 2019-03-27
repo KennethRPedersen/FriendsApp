@@ -86,30 +86,56 @@ public class SQLiteDataAccess implements IDataAccess {
     }
 
     /**
-     *
+     * Update a Friend in the database
      * @param updatedFriend
-     * @return
+     * @return the updated Friend(BEFriend) if successful else null
      */
     @Override
     public BEFriend updateFriend(BEFriend updatedFriend) {
+        ContentValues cv = contentValuesFromFriend(updatedFriend);
+
+        int affectedRows = db.update(TABLE_NAME, cv, " id = ?", new String[]{updatedFriend.getId()+""});
+
+        if (affectedRows == 1){
+            return updatedFriend;
+        }
         return null;
     }
 
+    /**
+     * Add a Friend to the database
+     * @param newFriend
+     * @return the new Friend but now with an id from the database.
+     */
     @Override
     public BEFriend addFriend(BEFriend newFriend) {
-        ContentValues cv = new ContentValues();
-        cv.put(TableRow.NAME, newFriend.getName());
-        cv.put(TableRow.ADDRESS, newFriend.getAddress());
-        cv.put(TableRow.EMAIL, newFriend.getEmail());
-        cv.put(TableRow.PHONE_NUMBER, newFriend.getPhoneNumber());
-        cv.put(TableRow.WEBSITE, newFriend.getWebsite());
-        cv.put(TableRow.BIRTHDAY, newFriend.getBirthdate().getTime());
+        ContentValues cv = contentValuesFromFriend(newFriend);
 
         long id = db.insert(TABLE_NAME, null, cv);
 
         newFriend.setId(id);
 
         return newFriend;
+    }
+
+
+    //Helper Methods:
+
+    /**
+     * Get content values with proper TableNames and values from friend.
+     * OBS: Does not do the id
+     * @param friend from which to take the values
+     * @return ContentValues with name, Address, email, phone number, website and birthdate.
+     */
+    private ContentValues contentValuesFromFriend(BEFriend friend) {
+        ContentValues cv = new ContentValues();
+        cv.put(TableRow.NAME, friend.getName());
+        cv.put(TableRow.ADDRESS, friend.getAddress());
+        cv.put(TableRow.EMAIL, friend.getEmail());
+        cv.put(TableRow.PHONE_NUMBER, friend.getPhoneNumber());
+        cv.put(TableRow.WEBSITE, friend.getWebsite());
+        cv.put(TableRow.BIRTHDAY, friend.getBirthdate().getTime());
+        return cv;
     }
 
     /**
