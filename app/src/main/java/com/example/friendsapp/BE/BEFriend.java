@@ -5,6 +5,7 @@ import java.util.Date;
 public class BEFriend {
     String name, address, email, phoneNumber, website;
     Date birthdate;
+    long id = -1;
 
     public BEFriend(String name, String address, String email, String phoneNumber, String website, Date birthdate) {
         this.name = name;
@@ -61,5 +62,13 @@ public class BEFriend {
 
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

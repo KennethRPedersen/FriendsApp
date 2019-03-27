@@ -32,8 +32,14 @@ public class OpenHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + getDatabaseName()
-                + " (id INTEGER PRIMARY KEY, name TEXT, address TEXT, email TEXT, phoneNumber TEXT, website TEXT, birthdate BIGINT)");
+        db.execSQL("CREATE TABLE " + getDatabaseName() + " ("
+                + TableRow.ID + " INTEGER PRIMARY KEY, "
+                + TableRow.NAME + " TEXT, "
+                + TableRow.ADDRESS + " TEXT, "
+                + TableRow.EMAIL + " TEXT, "
+                + TableRow.PHONE_NUMBER + " TEXT, "
+                + TableRow.WEBSITE + " TEXT, "
+                + TableRow.BIRTHDAY + " BIGINT)");
     }
 
     /**
