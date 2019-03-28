@@ -69,7 +69,7 @@ public class SQLiteDataAccess implements IDataAccess {
      * @return Single BEFried object
      */
     @Override
-    public BEFriend getFriendById(int id) {
+    public BEFriend getFriendById(long id) {
         Cursor cursor = this.db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id=?", new String[]{id+""});
         if (cursor.moveToFirst()) {
             cursor.close();

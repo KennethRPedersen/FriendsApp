@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IDataAccess {
     List<BEFriend> getAllFriends();
-    BEFriend getFriendById(int id);
+    BEFriend getFriendById(long id);
     void deleteFriend(int id);
     BEFriend updateFriend(BEFriend updatedFriend);
     BEFriend addFriend(BEFriend newFriend);

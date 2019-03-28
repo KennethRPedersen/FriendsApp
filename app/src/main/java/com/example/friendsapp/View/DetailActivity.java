@@ -20,9 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.friendsapp.BE.BEFriend;
+import com.example.friendsapp.Data.DataAccessFactory;
+import com.example.friendsapp.Data.IDataAccess;
 import com.example.friendsapp.R;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,20 +64,40 @@ public class DetailActivity extends AppCompatActivity {
 
     BEFriend friend;
     LocationManager lm;
-    LocationListener locListener;
+    IDataAccess dataAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
-        //TODO get id
-        //TODO get friend from id
+        Log.d(LOGTAG, "Detail Activity started");
 
         setGui(); //Initiates the GUI
         setButtons(); //Makes OnClickListeners on all buttons
 
+        long id = (long) getIntent().getSerializableExtra("ID");
+
+        DataAccessFactory factory = new DataAccessFactory(this);
+        dataAccess = factory.getDataAccessUsing(DataAccessFactory.DataTechnology.SQLite);
+
+        if (id > 0) {
+            friend = dataAccess.getFriendById(id);
+            initFields();
+        }
+
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    /*
+    populate edit texts with friends details
+     */
+    private void initFields() {
+        etName.setText(friend.getName());
+        etWeb.setText(friend.getWebsite());
+        etBDay.setText(friend.getBirthdate().toString());
+        etMail.setText(friend.getEmail());
+        etPhone.setText(friend.getPhoneNumber());
+        etAddress.setText(friend.getAddress());
     }
 
     /*
@@ -115,14 +139,14 @@ public class DetailActivity extends AppCompatActivity {
         Sets all the on click listeners on the buttons
     */
     private void setButtons() {
-        
+
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setHome();
             }
         });
-        
+
         btnShowMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,21 +174,21 @@ public class DetailActivity extends AppCompatActivity {
                 sendMail();
             }
         });
-        
+
         btnWeb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openSite();
             }
         });
-        
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveToDB();
             }
         });
-        
+
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,7 +202,16 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void saveToDB() {
+        BEFriend newFriend = new BEFriend(etName.getText().toString()
+                , etAddress.getText().toString()
+                , etMail.getText().toString()
+                , etPhone.getText().toString()
+                , etWeb.getText().toString()
+                , new Date(11,11,11)
+                , friend.getHome());
 
+        newFriend.setId(friend.getId());
+        dataAccess.addFriend(newFriend);
     }
 
     private void openSite() {
