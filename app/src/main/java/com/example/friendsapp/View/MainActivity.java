@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.DataAccessFactory;
 import com.example.friendsapp.Data.IDataAccess;
+import com.example.friendsapp.FriendAdapter;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Date;
@@ -20,9 +21,7 @@ import java.util.ArrayList;
 import com.example.friendsapp.R;
 
 public class MainActivity extends AppCompatActivity {
-    LinearLayout llMenuBar;
     ListView lvFriends;
-    Button btnNew;
     FriendAdapter fa;
     ArrayList<BEFriend> friends;
     IDataAccess dataAccess;
@@ -61,9 +60,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openFriendDetailView(int position) {
-        long id = friends.get(position).getId();
-        //TODO ADD DETAIL ACTIVITY TO INTENT
-        Intent intent = new Intent();
+        long id = position == -1 ? -1 : friends.get(position).getId();
+        Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("ID", id);
         startActivity(intent);
     }
