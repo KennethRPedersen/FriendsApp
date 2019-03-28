@@ -21,6 +21,9 @@ public class BEFriend {
         this.home = home;
     }
 
+    public BEFriend() {
+    }
+
     public String getName() {
         return name;
     }

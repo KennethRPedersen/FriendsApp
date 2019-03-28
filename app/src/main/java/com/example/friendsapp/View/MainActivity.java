@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // GET MOCK FRIENDS
-        friends = new ArrayList<>();
+        friends = (ArrayList<BEFriend>) dataAccess.getAllFriends();
         friends.add(new BEFriend("Margrethe Alexandrine Þórhildur Ingrid", "TestAddress", "TestEmail",
                 "TestPhoneNumber", "TestWebsite", new Date(11,11,11), new LatLng(0,0)));
         friends.add(new BEFriend("TestName222", "TestAddress222", "TestEmail222",

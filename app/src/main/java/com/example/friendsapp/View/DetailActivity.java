@@ -23,6 +23,7 @@ import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.DataAccessFactory;
 import com.example.friendsapp.Data.IDataAccess;
 import com.example.friendsapp.R;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -77,12 +78,16 @@ public class DetailActivity extends AppCompatActivity {
 
         long id = (long) getIntent().getSerializableExtra("ID");
 
+        Log.d(LOGTAG, id + "");
+
         DataAccessFactory factory = new DataAccessFactory(this);
         dataAccess = factory.getDataAccessUsing(DataAccessFactory.DataTechnology.SQLite);
 
         if (id > 0) {
             friend = dataAccess.getFriendById(id);
             initFields();
+        } else {
+            friend = new BEFriend();
         }
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -212,6 +217,7 @@ public class DetailActivity extends AppCompatActivity {
 
         newFriend.setId(friend.getId());
         dataAccess.addFriend(newFriend);
+        finish();
     }
 
     private void openSite() {
@@ -265,7 +271,8 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
         Location loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //friend.setCords(cords);
-        Log.d("Location", "Home cords set");
+        LatLng latlng = new LatLng(loc.getLatitude(), loc.getLongitude());
+        friend.setHome(latlng);
+        Log.d(LOGTAG, "Home cords set");
     }
 }
