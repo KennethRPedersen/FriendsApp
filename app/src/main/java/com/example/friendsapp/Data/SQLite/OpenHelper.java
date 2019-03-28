@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class OpenHelper extends SQLiteOpenHelper {
+    private String friendsTableName;
 
     /**
      * Create a helper object to create, open, and/or manage a database.
@@ -19,9 +20,9 @@ public class OpenHelper extends SQLiteOpenHelper {
      *                {@link #onUpgrade} will be used to upgrade the database; if the database is
      *                newer, {@link #onDowngrade} will be used to downgrade the database
      */
-    public OpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public OpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String friendsTableName) {
         super(context, name, factory, version);
-
+        this.friendsTableName = friendsTableName;
     }
 
     /**
@@ -32,7 +33,7 @@ public class OpenHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + getDatabaseName() + " ("
+        db.execSQL("CREATE TABLE " + friendsTableName + " ("
                 + TableRow.ID + " INTEGER PRIMARY KEY, "
                 + TableRow.NAME + " TEXT, "
                 + TableRow.ADDRESS + " TEXT, "
