@@ -36,7 +36,7 @@ public class SQLiteDataAccess implements IDataAccess {
     }
 
     /**
-     * Private Constructor
+     * PRIVATE Constructor
      * @param context
      */
     private SQLiteDataAccess(Context context) {
@@ -72,8 +72,9 @@ public class SQLiteDataAccess implements IDataAccess {
     public BEFriend getFriendById(long id) {
         Cursor cursor = this.db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id=?", new String[]{id+""});
         if (cursor.moveToFirst()) {
+            BEFriend friend = friendFromCursor(cursor);
             cursor.close();
-            return friendFromCursor(cursor);
+            return friend;
         }
         throw new IllegalArgumentException("No friend with id " + id + " does not exist.");
     }
