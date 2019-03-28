@@ -3,17 +3,16 @@ package com.example.friendsapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.DataAccessFactory;
 import com.example.friendsapp.Data.IDataAccess;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -39,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
         // GET MOCK FRIENDS
         friends = new ArrayList<>();
         friends.add(new BEFriend("Margrethe Alexandrine Þórhildur Ingrid", "TestAddress", "TestEmail",
-                "TestPhoneNumber", "TestWebsite", new Date(11,11,11)));
+                "TestPhoneNumber", "TestWebsite", new Date(11,11,11), new LatLng(0,0)));
         friends.add(new BEFriend("TestName222", "TestAddress222", "TestEmail222",
-                "TestPhoneNumber222", "TestWebsit2e22", new Date(11,11,11)));
+                "TestPhoneNumber222", "TestWebsit2e22", new Date(11,11,11), new LatLng(100,100)));
 
         // GET FRIENDS FROM DATABASE
         //friends = new ArrayList<>(dataAccess.getAllFriends());

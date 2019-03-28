@@ -39,7 +39,9 @@ public class OpenHelper extends SQLiteOpenHelper {
                 + TableRow.EMAIL + " TEXT, "
                 + TableRow.PHONE_NUMBER + " TEXT, "
                 + TableRow.WEBSITE + " TEXT, "
-                + TableRow.BIRTHDAY + " BIGINT)");
+                + TableRow.BIRTHDAY + " BIGINT, "
+                + TableRow.LAT + " DOUBLE, "
+                + TableRow.LNG + " DOUBLE)");
     }
 
     /**
