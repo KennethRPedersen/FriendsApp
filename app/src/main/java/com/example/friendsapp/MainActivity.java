@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.friendsapp.BE.BEFriend;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -35,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         friends.add(new BEFriend("Margrethe Alexandrine Þórhildur Ingrid", "TestAddress", "TestEmail",
-                "TestPhoneNumber", "TestWebsite", new Date(11,11,11)));
+                "TestPhoneNumber", "TestWebsite", new Date(11,11,11), new LatLng(0,0)));
         friends.add(new BEFriend("TestName222", "TestAddress222", "TestEmail222",
-                "TestPhoneNumber222", "TestWebsit2e22", new Date(11,11,11)));
+                "TestPhoneNumber222", "TestWebsit2e22", new Date(11,11,11), new LatLng(100,100)));
 
         fa = new FriendAdapter(this, R.layout.friendlistcell, friends);
         lvFriends.setAdapter(fa);

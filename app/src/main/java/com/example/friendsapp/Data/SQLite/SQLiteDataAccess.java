@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.IDataAccess;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.security.InvalidParameterException;
 import java.sql.Date;
@@ -23,15 +24,6 @@ public class SQLiteDataAccess implements IDataAccess {
     private static IDataAccess SQLiteDataAccess;
 
     /**
-     * Private Constructor
-     * @param context
-     */
-    private SQLiteDataAccess(Context context) {
-        OpenHelper openHelper = new OpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION);
-        this.db = openHelper.getWritableDatabase();
-    }
-
-    /**
      * Get Instance for singleton
      * @param context
      * @return
@@ -41,6 +33,15 @@ public class SQLiteDataAccess implements IDataAccess {
             SQLiteDataAccess = new SQLiteDataAccess(context);
         }
         return SQLiteDataAccess;
+    }
+
+    /**
+     * Private Constructor
+     * @param context
+     */
+    private SQLiteDataAccess(Context context) {
+        OpenHelper openHelper = new OpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION);
+        this.db = openHelper.getWritableDatabase();
     }
 
     /**
@@ -144,6 +145,8 @@ public class SQLiteDataAccess implements IDataAccess {
         cv.put(TableRow.PHONE_NUMBER, friend.getPhoneNumber());
         cv.put(TableRow.WEBSITE, friend.getWebsite());
         cv.put(TableRow.BIRTHDAY, friend.getBirthdate().getTime());
+        cv.put(TableRow.LAT, friend.getHome().latitude);
+        cv.put(TableRow.LNG, friend.getHome().longitude);
         return cv;
     }
 
@@ -154,11 +157,16 @@ public class SQLiteDataAccess implements IDataAccess {
      */
     private BEFriend friendFromCursor(Cursor cursor) {
         return new BEFriend(
-                cursor.getString(cursor.getColumnIndex("name")),
-                cursor.getString(cursor.getColumnIndex("address")),
-                cursor.getString(cursor.getColumnIndex("email")),
-                cursor.getString(cursor.getColumnIndex("phoneNumber")),
-                cursor.getString(cursor.getColumnIndex("website")),
-                new Date(cursor.getLong(cursor.getColumnIndex("birthdate"))));
+                cursor.getString(cursor.getColumnIndex(TableRow.NAME)),
+                cursor.getString(cursor.getColumnIndex(TableRow.ADDRESS)),
+                cursor.getString(cursor.getColumnIndex(TableRow.EMAIL)),
+                cursor.getString(cursor.getColumnIndex(TableRow.PHONE_NUMBER)),
+                cursor.getString(cursor.getColumnIndex(TableRow.WEBSITE)),
+                new Date(cursor.getLong(cursor.getColumnIndex(TableRow.BIRTHDAY))),
+                new LatLng(
+                        cursor.getDouble(cursor.getColumnIndex(TableRow.LAT)),
+                        cursor.getDouble(cursor.getColumnIndex(TableRow.LNG))
+                )
+        );
     }
 }

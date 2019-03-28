@@ -8,4 +8,6 @@ class TableRow {
     public static final String PHONE_NUMBER = "phoneNumber";
     public static final String WEBSITE = "website";
     public static final String BIRTHDAY = "birthdate";
+    public static final String LAT = "lat";
+    public static final String LNG = "lng";
 }

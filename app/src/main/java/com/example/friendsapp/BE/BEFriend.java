@@ -1,20 +1,24 @@
 package com.example.friendsapp.BE;
 
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.sql.Date;
 
 public class BEFriend {
     String name, address, email, phoneNumber, website;
     Date birthdate;
     long id = -1;
+    LatLng home;
 
-    public BEFriend(String name, String address, String email, String phoneNumber, String website, Date birthdate) {
+    public BEFriend(String name, String address, String email, String phoneNumber, String website, Date birthdate, LatLng home) {
         this.name = name;
         this.address = address;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.website = website;
         this.birthdate = birthdate;
+        this.home = home;
     }
 
     public String getName() {
@@ -71,5 +75,13 @@ public class BEFriend {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public LatLng getHome() {
+        return home;
+    }
+
+    public void setHome(LatLng home) {
+        this.home = home;
     }
 }
