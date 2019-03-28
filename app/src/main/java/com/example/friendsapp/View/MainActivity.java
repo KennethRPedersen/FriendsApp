@@ -1,7 +1,10 @@
 package com.example.friendsapp.View;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkPermissions();
+
         lvFriends = this.findViewById(R.id.lvFriends);
         DataAccessFactory factory = new DataAccessFactory(this);
         dataAccess = factory.getDataAccessUsing(DataAccessFactory.DataTechnology.SQLite);
@@ -57,6 +62,19 @@ public class MainActivity extends AppCompatActivity {
 
         fa = new FriendAdapter(this, R.layout.friendlistcell, friends);
         lvFriends.setAdapter(fa);
+    }
+
+    private void checkPermissions() {
+        ArrayList<String> permissions = new ArrayList<String>();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            permissions.add(Manifest.permission.CAMERA);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (permissions.size() > 0)
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]), 1);
     }
 
     private void openFriendDetailView(int position) {
