@@ -34,11 +34,8 @@ public class FriendAdapter extends ArrayAdapter<BEFriend> {
             LayoutInflater li = (LayoutInflater) getContext().getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
             v = li.inflate(R.layout.friendlistcell, null);
-            Log.d("LIST", "Position: " + position + " View created");
         }
         else
-            Log.d("LIST", "Position: " + position + " View Reused");
-
         v.setBackgroundColor(colours[position % colours.length]);
 
 
