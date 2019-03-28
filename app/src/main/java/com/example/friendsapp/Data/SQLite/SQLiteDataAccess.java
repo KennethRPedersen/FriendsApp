@@ -156,7 +156,7 @@ public class SQLiteDataAccess implements IDataAccess {
      * @return a BEFriend object
      */
     private BEFriend friendFromCursor(Cursor cursor) {
-        return new BEFriend(
+        BEFriend friend = new BEFriend(
                 cursor.getString(cursor.getColumnIndex(TableRow.NAME)),
                 cursor.getString(cursor.getColumnIndex(TableRow.ADDRESS)),
                 cursor.getString(cursor.getColumnIndex(TableRow.EMAIL)),
@@ -168,5 +168,7 @@ public class SQLiteDataAccess implements IDataAccess {
                         cursor.getDouble(cursor.getColumnIndex(TableRow.LNG))
                 )
         );
+        friend.setId(cursor.getLong(cursor.getColumnIndex(TableRow.ID)));
+        return friend;
     }
 }
