@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.IDataAccess;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.security.InvalidParameterException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +24,6 @@ public class SQLiteDataAccess implements IDataAccess {
     private static IDataAccess SQLiteDataAccess;
 
     /**
-     * Private Constructor
-     * @param context
-     */
-    private SQLiteDataAccess(Context context) {
-        OpenHelper openHelper = new OpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION);
-        this.db = openHelper.getWritableDatabase();
-    }
-
-    /**
      * Get Instance for singleton
      * @param context
      * @return
@@ -40,6 +33,15 @@ public class SQLiteDataAccess implements IDataAccess {
             SQLiteDataAccess = new SQLiteDataAccess(context);
         }
         return SQLiteDataAccess;
+    }
+
+    /**
+     * Private Constructor
+     * @param context
+     */
+    private SQLiteDataAccess(Context context) {
+        OpenHelper openHelper = new OpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION);
+        this.db = openHelper.getWritableDatabase();
     }
 
     /**
@@ -88,7 +90,7 @@ public class SQLiteDataAccess implements IDataAccess {
     /**
      * Update a Friend in the database
      * @param updatedFriend
-     * @return the updated Friend(BEFriend) if successful else null
+     * @return the updated Friend(BEFriend) if successful else it throws InvalidParameterException
      */
     @Override
     public BEFriend updateFriend(BEFriend updatedFriend) {
@@ -99,23 +101,31 @@ public class SQLiteDataAccess implements IDataAccess {
         if (affectedRows == 1){
             return updatedFriend;
         }
-        return null;
+        if (updatedFriend.getId() < 0){
+            throw new InvalidParameterException("Friend to update has id smaller then 0");
+        }
+        throw new InvalidParameterException("Friend with id: " + updatedFriend.getId() + "does not exist");
     }
 
     /**
-     * Add a Friend to the database
+     * Add a Friend to the database.
+     * If the id is bigger then 0 it will update the friend instead.
      * @param newFriend
      * @return the new Friend but now with an id from the database.
      */
     @Override
     public BEFriend addFriend(BEFriend newFriend) {
-        ContentValues cv = contentValuesFromFriend(newFriend);
+        if (newFriend.getId() > 0){
+            return updateFriend(newFriend);
+        }else{
+            ContentValues cv = contentValuesFromFriend(newFriend);
 
-        long id = db.insert(TABLE_NAME, null, cv);
+            long id = db.insert(TABLE_NAME, null, cv);
 
-        newFriend.setId(id);
+            newFriend.setId(id);
 
-        return newFriend;
+            return newFriend;
+        }
     }
 
 
@@ -135,6 +145,8 @@ public class SQLiteDataAccess implements IDataAccess {
         cv.put(TableRow.PHONE_NUMBER, friend.getPhoneNumber());
         cv.put(TableRow.WEBSITE, friend.getWebsite());
         cv.put(TableRow.BIRTHDAY, friend.getBirthdate().getTime());
+        cv.put(TableRow.LAT, friend.getHome().latitude);
+        cv.put(TableRow.LNG, friend.getHome().longitude);
         return cv;
     }
 
@@ -144,12 +156,19 @@ public class SQLiteDataAccess implements IDataAccess {
      * @return a BEFriend object
      */
     private BEFriend friendFromCursor(Cursor cursor) {
-        return new BEFriend(
-                cursor.getString(cursor.getColumnIndex("name")),
-                cursor.getString(cursor.getColumnIndex("address")),
-                cursor.getString(cursor.getColumnIndex("email")),
-                cursor.getString(cursor.getColumnIndex("phoneNumber")),
-                cursor.getString(cursor.getColumnIndex("website")),
-                new Date(cursor.getLong(cursor.getColumnIndex("birthdate"))));
+        BEFriend friend = new BEFriend(
+                cursor.getString(cursor.getColumnIndex(TableRow.NAME)),
+                cursor.getString(cursor.getColumnIndex(TableRow.ADDRESS)),
+                cursor.getString(cursor.getColumnIndex(TableRow.EMAIL)),
+                cursor.getString(cursor.getColumnIndex(TableRow.PHONE_NUMBER)),
+                cursor.getString(cursor.getColumnIndex(TableRow.WEBSITE)),
+                new Date(cursor.getLong(cursor.getColumnIndex(TableRow.BIRTHDAY))),
+                new LatLng(
+                        cursor.getDouble(cursor.getColumnIndex(TableRow.LAT)),
+                        cursor.getDouble(cursor.getColumnIndex(TableRow.LNG))
+                )
+        );
+        friend.setId(cursor.getLong(cursor.getColumnIndex(TableRow.ID)));
+        return friend;
     }
 }
