@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
@@ -23,13 +22,10 @@ import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.DataAccessFactory;
 import com.example.friendsapp.Data.IDataAccess;
 import com.example.friendsapp.R;
+import com.example.friendsapp.Shared;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -244,26 +240,19 @@ public class DetailActivity extends AppCompatActivity {
 
     private void makeCall() {
         Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + friend.getPhoneNumber()));
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    1);
-        } else {
-            startActivity(callIntent);
-        }
+        startActivity(callIntent);
+
     }
 
     private void showOnMap() {
-        /*if (friend.getCords() == null) {
+        if (friend.getHome() == null) {
             Toast.makeText(this, "Please set the home cords", Toast.LENGTH_SHORT).show();
             return;
         }
-
         Intent intent = new Intent(this, MapActivity.class);
-
-        intent.putExtra("friend", friend);
-
-        startActivity(intent);*/
+        BEFriend[] friends = new BEFriend[]{friend};
+        intent.putExtra(Shared.FRIENDS_KEY, friends);
+        startActivity(intent);
     }
 
     private void setHome() {

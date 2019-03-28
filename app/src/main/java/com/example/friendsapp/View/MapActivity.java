@@ -1,4 +1,4 @@
-package com.example.friendsapp;
+package com.example.friendsapp.View;
 
 import android.Manifest;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.util.Log;
 import com.example.friendsapp.Data.DataAccessFactory;
 import com.example.friendsapp.Data.IDataAccess;
 import com.example.friendsapp.Exceptions.PermissionMissingException;
+import com.example.friendsapp.R;
+import com.example.friendsapp.Shared;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;

@@ -3,13 +3,14 @@ package com.example.friendsapp.BE;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class BEFriend {
+public class BEFriend implements Serializable {
     String name, address, email, phoneNumber, website;
     Date birthdate;
     long id = -1;
-    LatLng home;
+    Double homeLat, homeLng;
 
     public BEFriend(String name, String address, String email, String phoneNumber, String website, Date birthdate, LatLng home) {
         this.name = name;
@@ -18,7 +19,8 @@ public class BEFriend {
         this.phoneNumber = phoneNumber;
         this.website = website;
         this.birthdate = birthdate;
-        this.home = home;
+        this.homeLat = home.latitude;
+        this.homeLng = home.longitude;
     }
 
     public BEFriend() {
@@ -81,10 +83,11 @@ public class BEFriend {
     }
 
     public LatLng getHome() {
-        return home;
+        return new LatLng(homeLat, homeLng);
     }
 
     public void setHome(LatLng home) {
-        this.home = home;
+        this.homeLat = home.latitude;
+        this.homeLng = home.longitude;
     }
 }

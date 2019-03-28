@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
             permissions.add(Manifest.permission.CAMERA);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+            permissions.add(Manifest.permission.CALL_PHONE);
+
 
         if (permissions.size() > 0)
             ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]), 1);
