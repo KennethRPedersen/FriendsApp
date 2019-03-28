@@ -1,16 +1,34 @@
 package com.example.friendsapp.View;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.R;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 public class DetailActivity extends AppCompatActivity {
+
+    static final String LOGTAG = "DETAILACTIVITY";
 
     //EditText
     EditText etName;
@@ -40,6 +58,10 @@ public class DetailActivity extends AppCompatActivity {
     Button btnSave;
     Button btnCancel;
 
+    BEFriend friend;
+    LocationManager lm;
+    LocationListener locListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +72,8 @@ public class DetailActivity extends AppCompatActivity {
 
         setGui(); //Initiates the GUI
         setButtons(); //Makes OnClickListeners on all buttons
+
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
     /*
@@ -150,26 +174,65 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void cancel() {
+        finish();
     }
 
     private void saveToDB() {
+
     }
 
     private void openSite() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(friend.getWebsite()));
+        startActivity(browserIntent);
     }
 
     private void sendMail() {
+        final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+
+        /* Fill it with Data */
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{friend.getEmail()});
+
+
+        /* Send it off to the Activity-Chooser */
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
     private void SendSms() {
+        Intent smsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + friend.getPhoneNumber()));
+        startActivity(smsIntent);
     }
 
     private void makeCall() {
+        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + friend.getPhoneNumber()));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    1);
+        } else {
+            startActivity(callIntent);
+        }
     }
 
     private void showOnMap() {
+        /*if (friend.getCords() == null) {
+            Toast.makeText(this, "Please set the home cords", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(this, MapActivity.class);
+
+        intent.putExtra("friend", friend);
+
+        startActivity(intent);*/
     }
 
     private void setHome() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Location loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //friend.setCords(cords);
+        Log.d("Location", "Home cords set");
     }
 }

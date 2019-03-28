@@ -6,7 +6,6 @@ public class BEFriend {
     String name, address, email, phoneNumber, website;
     Date birthdate;
 
-
     public String getName() {
         return name;
     }
