@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.IDataAccess;
 
+import java.security.InvalidParameterException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ public class SQLiteDataAccess implements IDataAccess {
     /**
      * Update a Friend in the database
      * @param updatedFriend
-     * @return the updated Friend(BEFriend) if successful else null
+     * @return the updated Friend(BEFriend) if successful else it throws InvalidParameterException
      */
     @Override
     public BEFriend updateFriend(BEFriend updatedFriend) {
@@ -99,23 +100,31 @@ public class SQLiteDataAccess implements IDataAccess {
         if (affectedRows == 1){
             return updatedFriend;
         }
-        return null;
+        if (updatedFriend.getId() < 0){
+            throw new InvalidParameterException("Friend to update has id smaller then 0");
+        }
+        throw new InvalidParameterException("Friend with id: " + updatedFriend.getId() + "does not exist");
     }
 
     /**
-     * Add a Friend to the database
+     * Add a Friend to the database.
+     * If the id is bigger then 0 it will update the friend instead.
      * @param newFriend
      * @return the new Friend but now with an id from the database.
      */
     @Override
     public BEFriend addFriend(BEFriend newFriend) {
-        ContentValues cv = contentValuesFromFriend(newFriend);
+        if (newFriend.getId() > 0){
+            return updateFriend(newFriend);
+        }else{
+            ContentValues cv = contentValuesFromFriend(newFriend);
 
-        long id = db.insert(TABLE_NAME, null, cv);
+            long id = db.insert(TABLE_NAME, null, cv);
 
-        newFriend.setId(id);
+            newFriend.setId(id);
 
-        return newFriend;
+            return newFriend;
+        }
     }
 
 
