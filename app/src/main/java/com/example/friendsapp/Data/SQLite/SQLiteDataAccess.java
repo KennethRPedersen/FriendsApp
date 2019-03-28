@@ -40,7 +40,7 @@ public class SQLiteDataAccess implements IDataAccess {
      * @param context
      */
     private SQLiteDataAccess(Context context) {
-        OpenHelper openHelper = new OpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION);
+        OpenHelper openHelper = new OpenHelper(context,DATABASE_NAME,null,DATABASE_VERSION, TABLE_NAME);
         this.db = openHelper.getWritableDatabase();
     }
 
