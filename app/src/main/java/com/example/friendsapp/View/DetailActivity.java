@@ -249,7 +249,7 @@ public class DetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Please set the home cords", Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, MapsActivity.class);
         BEFriend[] friends = new BEFriend[]{friend};
         intent.putExtra(Shared.FRIENDS_KEY, friends);
         startActivity(intent);
@@ -263,5 +263,6 @@ public class DetailActivity extends AppCompatActivity {
         LatLng latlng = new LatLng(loc.getLatitude(), loc.getLongitude());
         friend.setHome(latlng);
         Log.d(LOGTAG, "Home cords set");
+        Log.d(LOGTAG, friend.getHome().toString());
     }
 }
