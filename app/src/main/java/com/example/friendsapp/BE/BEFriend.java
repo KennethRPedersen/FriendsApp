@@ -10,7 +10,7 @@ public class BEFriend implements Serializable {
     String name, address, email, phoneNumber, website;
     Date birthdate;
     long id = -1;
-    Double homeLat, homeLng;
+    Double homeLat = 0.0, homeLng = 0.0;
 
     public BEFriend(String name, String address, String email, String phoneNumber, String website, Date birthdate, LatLng home) {
         this.name = name;

@@ -75,7 +75,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         setGui(); //Initiates the GUI
         setButtons(); //Makes OnClickListeners on all buttons
 
-        long id = (long) getIntent().getSerializableExtra("ID");
+        long id = (long) getIntent().getSerializableExtra(Shared.ID_KEY);
 
         Log.d(LOGTAG, id + "");
 
@@ -220,6 +220,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         newFriend.setId(friend.getId());
         dataAccess.addFriend(newFriend);
         stopListener();
+        setResult(RESULT_OK);
         finish();
     }
 
