@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -34,7 +35,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.friends = (BEFriend[]) getIntent().getSerializableExtra(Shared.FRIENDS_KEY);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -46,7 +46,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.new_friend:
-                openNewFriendDetailView();
+                openActivityByFriendId(-1);
                 return true;
             case R.id.list_view:
                 finish();
@@ -68,12 +68,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
         setHomeMarkersIn(googleMap);
 
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(friends[0].getHome()));
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                openActivityByFriendId((long) marker.getZIndex());
+                return false;
+            }
+        });
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(friends[0].getHome()));
     }
 
     private void setHomeMarkersIn(GoogleMap map) {
@@ -82,12 +87,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             LatLng home = friend.getHome();
             markOpt.position(home);
             markOpt.title(friend.getName());
+            markOpt.zIndex(friend.getId());
             map.addMarker(markOpt);
         }
     }
 
-    private void openNewFriendDetailView() {
-        long id = -1;
+    /**
+     * If one would add a new Friend give id -1.
+     * @param id
+     */
+    private void openActivityByFriendId(long id){
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(Shared.ID_KEY, id);
         startActivityForResult(intent, DETAILACTIVITY_INTENT_ID);
