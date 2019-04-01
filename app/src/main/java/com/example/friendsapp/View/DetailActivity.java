@@ -21,13 +21,15 @@ import android.widget.Toast;
 import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.DataAccessFactory;
 import com.example.friendsapp.Data.IDataAccess;
+import com.example.friendsapp.Model.IViewCallBack;
+import com.example.friendsapp.Model.LocationListener;
 import com.example.friendsapp.R;
 import com.example.friendsapp.Shared;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Date;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements IViewCallBack {
 
     static final String LOGTAG = "DETAILACTIVITY";
 
@@ -61,6 +63,7 @@ public class DetailActivity extends AppCompatActivity {
 
     BEFriend friend;
     LocationManager lm;
+    LocationListener locListener;
     IDataAccess dataAccess;
 
     @Override
@@ -87,6 +90,8 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locListener = new LocationListener(this);
+        setLocListener();
     }
 
     /*
@@ -199,6 +204,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void cancel() {
+        stopListener();
         finish();
     }
 
@@ -208,11 +214,12 @@ public class DetailActivity extends AppCompatActivity {
                 , etMail.getText().toString()
                 , etPhone.getText().toString()
                 , etWeb.getText().toString()
-                , new Date(11,11,11)
+                , new Date(11, 11, 11)
                 , friend.getHome());
 
         newFriend.setId(friend.getId());
         dataAccess.addFriend(newFriend);
+        stopListener();
         finish();
     }
 
@@ -244,6 +251,24 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    private void setLocListener() {
+        Log.d("Location", "Start listening");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Log.d(LOGTAG, "running listener");
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locListener);
+    }
+
+    private void stopListener() {
+        Log.d("Location", "Stop listening");
+
+        if (locListener == null) return;
+
+        lm.removeUpdates(locListener);
+    }
+
     private void showOnMap() {
         if (friend.getHome() == null) {
             Toast.makeText(this, "Please set the home cords", Toast.LENGTH_SHORT).show();
@@ -252,6 +277,7 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MapsActivity.class);
         BEFriend[] friends = new BEFriend[]{friend};
         intent.putExtra(Shared.FRIENDS_KEY, friends);
+        stopListener();
         startActivity(intent);
     }
 
@@ -264,5 +290,10 @@ public class DetailActivity extends AppCompatActivity {
         friend.setHome(latlng);
         Log.d(LOGTAG, "Home cords set");
         Log.d(LOGTAG, friend.getHome().toString());
+    }
+
+    @Override
+    public void setCurrentLocation(Location location) {
+        Log.d(LOGTAG, location.getLatitude() + " : " + location.getLongitude());
     }
 }
