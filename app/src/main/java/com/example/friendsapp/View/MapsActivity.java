@@ -15,12 +15,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-
-    private static String LOGTAG = "CameraTag";
-
     private GoogleMap mMap;
-
-    BEFriend friend;
+    private BEFriend[] friends;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +27,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        BEFriend[] friends = (BEFriend[]) getIntent().getSerializableExtra(Shared.FRIENDS_KEY);
-
-        friend = friends[0];
-
-        Log.d(LOGTAG, friends[0].getHome() + "");
-
+        this.friends = (BEFriend[]) getIntent().getSerializableExtra(Shared.FRIENDS_KEY);
     }
 
 
@@ -53,9 +44,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng friendPos = new LatLng(friend.getHome().latitude, friend.getHome().longitude);
-        mMap.addMarker(new MarkerOptions().position(friendPos).title(friend.getName()));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(friendPos));
+        setHomeMarkersIn(googleMap);
+
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(friends[0].getHome()));
+    }
+
+    private void setHomeMarkersIn(GoogleMap map) {
+        for (BEFriend friend:friends) {
+            MarkerOptions markOpt = new MarkerOptions();
+            LatLng home = friend.getHome();
+            markOpt.position(home);
+            map.addMarker(markOpt);
+        }
     }
 }
