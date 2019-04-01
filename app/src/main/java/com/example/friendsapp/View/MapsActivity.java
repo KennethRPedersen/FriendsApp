@@ -1,8 +1,11 @@
 package com.example.friendsapp.View;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.R;
@@ -14,9 +17,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private BEFriend[] friends;
+    private int DETAILACTIVITY_INTENT_ID = 1345;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         this.friends = (BEFriend[]) getIntent().getSerializableExtra(Shared.FRIENDS_KEY);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.navigation_map, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.new_friend:
+                openNewFriendDetailView();
+                return true;
+            case R.id.list_view:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -55,7 +81,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             MarkerOptions markOpt = new MarkerOptions();
             LatLng home = friend.getHome();
             markOpt.position(home);
+            markOpt.title(friend.getName());
             map.addMarker(markOpt);
         }
+    }
+
+    private void openNewFriendDetailView() {
+        long id = -1;
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(Shared.ID_KEY, id);
+        startActivityForResult(intent, DETAILACTIVITY_INTENT_ID);
     }
 }

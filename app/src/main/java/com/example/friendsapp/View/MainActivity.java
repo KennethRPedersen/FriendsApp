@@ -44,9 +44,18 @@ public class MainActivity extends AppCompatActivity {
             case R.id.new_friend:
                 openFriendDetailView(-1);
                 return true;
+            case R.id.map_view:
+                openMapViewWithAllFriends();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void openMapViewWithAllFriends() {
+        Intent mapIntent = new Intent(this, MapsActivity.class);
+        mapIntent.putExtra(Shared.FRIENDS_KEY, friends.toArray(new BEFriend[]{}));
+        startActivity(mapIntent);
     }
 
     @Override

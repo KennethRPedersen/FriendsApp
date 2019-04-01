@@ -6,7 +6,7 @@
         android:title="New friend.." />
 
     <item
-        android:id="@+id/map_view"
-        android:title="Show as map" />
+        android:id="@+id/list_view"
+        android:title="Show as list" />
 
 </menu>
