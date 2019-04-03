@@ -74,11 +74,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                openActivityByFriendId((long) marker.getZIndex());
+                openActivityByFriendId(getFriendIdFromMarker(marker));
                 return false;
             }
         });
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(friends[0].getHome()));
+    }
+
+    private long getFriendIdFromMarker(Marker marker) {
+        LatLng markerPosition = marker.getPosition();
+        for (BEFriend friend:friends) {
+            if (markerPosition.equals(friend.getHome())){
+                return friend.getId();
+            }
+        }
+        throw new IllegalArgumentException("There was no friend on this position:" + markerPosition.toString());
     }
 
     private void setHomeMarkersIn(GoogleMap map) {
@@ -87,7 +97,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             LatLng home = friend.getHome();
             markOpt.position(home);
             markOpt.title(friend.getName());
-            markOpt.zIndex(friend.getId());
             map.addMarker(markOpt);
         }
     }
