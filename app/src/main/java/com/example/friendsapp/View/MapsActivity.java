@@ -102,7 +102,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * If one would add a new Friend give id -1.
+     * For Adding a new Friend give -1 as id.
      * @param id
      */
     private void openActivityByFriendId(long id){
