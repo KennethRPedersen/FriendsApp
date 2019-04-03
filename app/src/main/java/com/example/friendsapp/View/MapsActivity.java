@@ -81,16 +81,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(friends[0].getHome()));
     }
 
-    private long getFriendIdFromMarker(Marker marker) {
-        LatLng markerPosition = marker.getPosition();
-        for (BEFriend friend:friends) {
-            if (markerPosition.equals(friend.getHome())){
-                return friend.getId();
-            }
-        }
-        throw new IllegalArgumentException("There was no friend on this position:" + markerPosition.toString());
-    }
-
+    /**
+     * Set a Marker for every friends home location.
+     * @param map
+     */
     private void setHomeMarkersIn(GoogleMap map) {
         for (BEFriend friend:friends) {
             MarkerOptions markOpt = new MarkerOptions();
@@ -109,5 +103,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(Shared.ID_KEY, id);
         startActivityForResult(intent, DETAILACTIVITY_INTENT_ID);
+    }
+
+    /**
+     * Get the id of the Friend with the same location as the marker.
+     * @param marker
+     * @return
+     */
+    private long getFriendIdFromMarker(Marker marker) {
+        LatLng markerPosition = marker.getPosition();
+        for (BEFriend friend:friends) {
+            if (markerPosition.equals(friend.getHome())){
+                return friend.getId();
+            }
+        }
+        throw new IllegalArgumentException("There was no friend on this position:" + markerPosition.toString());
     }
 }
