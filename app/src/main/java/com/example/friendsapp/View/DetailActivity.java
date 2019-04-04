@@ -103,8 +103,8 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         setLocListener();
     }
 
-    /*
-    populate edit texts with friends details
+    /**
+        populate edit texts with friends details
      */
     private void initFields() {
         etName.setText(friend.getName());
@@ -115,10 +115,9 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         etAddress.setText(friend.getAddress());
     }
 
-    /*
+    /**
         binds the ui
     */
-
     private void setGui() {
         //EditText
         etName = findViewById(R.id.etName);
@@ -150,7 +149,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
     }
 
 
-    /*
+    /**
         Sets all the on click listeners on the buttons
     */
     private void setButtons() {
@@ -237,15 +236,22 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
                         etBDay.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        Log.d(LOGTAG, year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
 
+    /**
+     * returns a Date based on the a dateString written as yyyy-MM-dd
+     * the divider can be what ever you want, as long as its the same as one used in the dateString
+     *
+     * @param dateString
+     * @param divider
+     * @return Date
+     */
     private Date getDateFromString(String dateString, String divider) {
         try {
-            Long millis = new SimpleDateFormat("yyyy"+divider+"MM"+divider+"dd").parse(dateString).getTime();
+            Long millis = new SimpleDateFormat("yyyy" + divider + "MM" + divider + "dd").parse(dateString).getTime();
             return new Date(millis);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -253,41 +259,77 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         return null;
     }
 
+    /**
+     * Stops the Location listener when the back button is pressed
+     */
+    @Override
+    public void onBackPressed() {
+        stopListener();
+        super.onBackPressed();
+    }
+
+    /**
+     * Stops the listener and closes the activity
+     */
     private void cancel() {
         stopListener();
         finish();
     }
 
+    /**
+     * Checkes the fields, if they are empty we prompt the user to enter what is missing
+     * then makes a new friend object based on the fields
+     * then saves it to the BD and closes the activity
+     */
     private void saveToDB() {
-        Date date = getDateFromString(etBDay.getText().toString(), "-");
-        if (date == null) {
+        if (etName.getText().toString().equals("")) {
+            Toast.makeText(this, "Please enter a name", Toast.LENGTH_LONG).show();
             return;
+        } else if (etBDay.getText().toString().equals("")) {
+            Toast.makeText(this, "Please enter a date", Toast.LENGTH_LONG).show();
+            return;
+        } else if (etAddress.getText().toString().equals("")) {
+            Toast.makeText(this, "Please enter a address", Toast.LENGTH_LONG).show();
+            return;
+        } else if (etMail.getText().toString().equals("")) {
+            Toast.makeText(this, "Please enter a mail", Toast.LENGTH_LONG).show();
+            return;
+        } else if (etPhone.getText().toString().equals("")) {
+            Toast.makeText(this, "Please enter a phone number", Toast.LENGTH_LONG).show();
+            return;
+        } else if (etWeb.getText().toString().equals("")) {
+            Toast.makeText(this, "Please enter a website", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+            Date date = getDateFromString(etBDay.getText().toString(), "-");
+
+            BEFriend newFriend = new BEFriend(etName.getText().toString()
+                    , etAddress.getText().toString()
+                    , etMail.getText().toString()
+                    , etPhone.getText().toString()
+                    , etWeb.getText().toString()
+                    , date
+                    , friend.getHome());
+
+            newFriend.setId(friend.getId());
+            dataAccess.addFriend(newFriend);
+            stopListener();
+            setResult(RESULT_OK);
+            finish();
         }
-
-        if (friend == null) {
-
-        }
-
-        BEFriend newFriend = new BEFriend(etName.getText().toString()
-                , etAddress.getText().toString()
-                , etMail.getText().toString()
-                , etPhone.getText().toString()
-                , etWeb.getText().toString()
-                , date
-                , friend.getHome());
-
-        newFriend.setId(friend.getId());
-        dataAccess.addFriend(newFriend);
-        stopListener();
-        setResult(RESULT_OK);
-        finish();
     }
 
+    /**
+     * Opens the default browser with a website from the friend
+     */
     private void openSite() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(friend.getWebsite()));
         startActivity(browserIntent);
     }
 
+    /**
+     * Opens the default mail app and set the receiver in the mail based on the mail in the friend object
+     */
     private void sendMail() {
         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 
@@ -300,17 +342,26 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
+    /**
+     * Opens the default SMS app and sets the receiver based on the number in the friend object
+     */
     private void SendSms() {
         Intent smsIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + friend.getPhoneNumber()));
         startActivity(smsIntent);
     }
 
+    /**
+     * Makes a call the the number in the friend object
+     */
     private void makeCall() {
         Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + friend.getPhoneNumber()));
         startActivity(callIntent);
 
     }
 
+    /**
+     * Starts a location listener
+     */
     private void setLocListener() {
         Log.d("Location", "Start listening");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -321,6 +372,9 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locListener);
     }
 
+    /**
+     * Removes the location listener from the location manager
+     */
     private void stopListener() {
         Log.d("Location", "Stop listening");
 
@@ -329,6 +383,10 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         lm.removeUpdates(locListener);
     }
 
+    /**
+     * Opens the map activity and sends the friend object as a extra in the intent
+     * then stops the location listener
+     */
     private void showOnMap() {
         if (friend.getHome() == null) {
             Toast.makeText(this, "Please set the home cords", Toast.LENGTH_SHORT).show();
@@ -341,6 +399,9 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         startActivity(intent);
     }
 
+    /**
+     * Gets a location from the location manager and set the home in the friend object
+     */
     private void setHome() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -352,6 +413,10 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         Log.d(LOGTAG, friend.getHome().toString());
     }
 
+    /**
+     * Method form the LocationListener to see if its running
+     * @param location
+     */
     @Override
     public void setCurrentLocation(Location location) {
         Log.d(LOGTAG, location.getLatitude() + " : " + location.getLongitude());
