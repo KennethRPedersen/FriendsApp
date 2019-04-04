@@ -10,7 +10,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +34,7 @@ import com.example.friendsapp.R;
 import com.example.friendsapp.Shared;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -74,6 +78,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
     LocationManager lm;
     LocationListener locListener;
     IDataAccess dataAccess;
+    File mFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +222,65 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
             }
         });
 
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCamera();
+            }
+        });
+
+    }
+
+    private void openCamera() {
+        mFile = getOutputMediaFile(); // create a file to save the image
+        if (mFile == null) {
+            Toast.makeText(this, "Could not create file...", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //com.example.homefolder.example.provider
+
+        // create Intent to take a picture
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(
+                this,
+                "com.example.homefolder.example.provider", //(use your app signature + ".provider" )
+                mFile));
+
+        Log.d(LOGTAG, "file uri = " + Uri.fromFile(mFile).toString());
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            Log.d(LOGTAG, "camera app will be started");
+            startActivityForResult(intent, 1);
+        } else
+            Log.d(LOGTAG, "camera app could NOT be started");
+
+    }
+
+    /**
+     * Create a File for saving an image
+     */
+    private File getOutputMediaFile() {
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "Camera01");
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = Calendar.getInstance().toString();
+        String postfix = "jpg";
+        String prefix = "IMG";
+
+        File mediaFile = new File(mediaStorageDir.getPath() +
+                File.separator + prefix +
+                "_" + timeStamp + "." + postfix);
+
+        return mediaFile;
     }
 
     /**
