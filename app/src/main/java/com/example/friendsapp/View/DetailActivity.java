@@ -32,7 +32,11 @@ import com.example.friendsapp.Shared;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class DetailActivity extends AppCompatActivity implements IViewCallBack {
 
@@ -216,6 +220,10 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
 
     }
 
+    /**
+     * Opens a dialog window with a date picker inside.
+     * On date selected we replace the text in etBDay.
+     */
     private void openDatePicker() {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
@@ -228,24 +236,44 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
-                        etBDay.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                        etBDay.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        Log.d(LOGTAG, year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
     }
-    
+
+    private Date getDateFromString(String dateString, String divider) {
+        try {
+            Long millis = new SimpleDateFormat("yyyy"+divider+"MM"+divider+"dd").parse(dateString).getTime();
+            return new Date(millis);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void cancel() {
         stopListener();
         finish();
     }
 
     private void saveToDB() {
+        Date date = getDateFromString(etBDay.getText().toString(), "-");
+        if (date == null) {
+            return;
+        }
+
+        if (friend == null) {
+
+        }
+
         BEFriend newFriend = new BEFriend(etName.getText().toString()
                 , etAddress.getText().toString()
                 , etMail.getText().toString()
                 , etPhone.getText().toString()
                 , etWeb.getText().toString()
-                , new Date(11, 11, 11)
+                , date
                 , friend.getHome());
 
         newFriend.setId(friend.getId());
