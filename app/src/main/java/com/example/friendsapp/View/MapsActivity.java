@@ -74,7 +74,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                openActivityByFriendId((long) marker.getZIndex());
+                openActivityByFriendId((long) marker.getTag());
                 return false;
             }
         });
@@ -87,13 +87,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             LatLng home = friend.getHome();
             markOpt.position(home);
             markOpt.title(friend.getName());
-            markOpt.zIndex(friend.getId());
-            map.addMarker(markOpt);
+            map.addMarker(markOpt).setTag(friend.getId());
         }
     }
 
     /**
-     * If one would add a new Friend give id -1.
+     * Open a friend in detail view.
+     * For adding a new friend give id -1.
      * @param id
      */
     private void openActivityByFriendId(long id){
