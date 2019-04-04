@@ -19,9 +19,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final long DOUBLECLICK_TIME_THRESHOLD = 10000;
     private GoogleMap mMap;
     private BEFriend[] friends;
     private int DETAILACTIVITY_INTENT_ID = 1345;
+    private boolean markerClicked = false;
+    private long lastClickedId;
+    private long lastClickedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,14 +76,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.getUiSettings().setZoomControlsEnabled(true);
 
         setHomeMarkersIn(googleMap);
-
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker) {
+            public void onInfoWindowClick(Marker marker) {
                 openActivityByFriendId((long) marker.getTag());
-                return false;
             }
         });
+
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(friends[0].getHome()));
     }
 
@@ -103,4 +106,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         intent.putExtra(Shared.ID_KEY, id);
         startActivityForResult(intent, DETAILACTIVITY_INTENT_ID);
     }
+
+
 }
