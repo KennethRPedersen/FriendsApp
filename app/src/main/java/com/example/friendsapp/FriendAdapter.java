@@ -15,11 +15,6 @@ import java.util.ArrayList;
 
 public class FriendAdapter extends ArrayAdapter<BEFriend> {
     private ArrayList<BEFriend> friends;
-    private final int[] colours = {
-            Color.parseColor("#AAAAAA"),
-            Color.parseColor("#EEEEEE")
-    };
-
 
     public FriendAdapter(Context context, int textViewResourceId,
                          ArrayList<BEFriend> friends) {
@@ -35,9 +30,6 @@ public class FriendAdapter extends ArrayAdapter<BEFriend> {
                     Context.LAYOUT_INFLATER_SERVICE);
             v = li.inflate(R.layout.friendlistcell, null);
         }
-        else
-        v.setBackgroundColor(colours[position % colours.length]);
-
 
         BEFriend f = friends.get(position);
 
