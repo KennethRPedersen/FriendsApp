@@ -169,7 +169,10 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Birthday"
-                android:inputType="date" />
+                android:inputType="date"
+                android:focusable="false"
+                />
+
         </TableRow>
 
         <TableRow
