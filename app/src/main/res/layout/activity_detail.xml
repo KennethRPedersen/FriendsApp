@@ -40,6 +40,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:shrinkColumns="1"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -59,7 +60,7 @@
 
             <EditText
                 android:id="@+id/etAddress"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Address"
@@ -67,7 +68,7 @@
 
             <Button
                 android:id="@+id/btnHome"
-                android:layout_width="55dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hapticFeedbackEnabled="true"
@@ -76,7 +77,7 @@
 
             <Button
                 android:id="@+id/btnShowMap"
-                android:layout_width="55dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hapticFeedbackEnabled="true"
@@ -97,7 +98,7 @@
 
             <EditText
                 android:id="@+id/etPhone"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Phone"
@@ -105,7 +106,7 @@
 
             <Button
                 android:id="@+id/btnCall"
-                android:layout_width="60dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hapticFeedbackEnabled="true"
@@ -114,7 +115,7 @@
 
             <Button
                 android:id="@+id/btnSMS"
-                android:layout_width="60dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hapticFeedbackEnabled="true"
@@ -136,7 +137,7 @@
 
             <EditText
                 android:id="@+id/etMail"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Mail"
@@ -144,7 +145,7 @@
 
             <Button
                 android:id="@+id/btnMail"
-                android:layout_width="60dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hapticFeedbackEnabled="true"
@@ -165,7 +166,7 @@
 
             <EditText
                 android:id="@+id/etBDay"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Birthday"
@@ -188,7 +189,7 @@
 
             <EditText
                 android:id="@+id/etWeb"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Web"
@@ -196,12 +197,12 @@
 
             <Button
                 android:id="@+id/btnWeb"
-                android:layout_width="60dp"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+                android:hapticFeedbackEnabled="true"
                 android:text="💻"
-                android:textSize="20sp"
-                android:hapticFeedbackEnabled="true" />
+                android:textSize="20sp" />
         </TableRow>
 
     </TableLayout>
