@@ -1,13 +1,22 @@
 package com.example.friendsapp.View;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.friendsapp.BE.BEFriend;
+import com.example.friendsapp.Model.IViewCallBack;
+import com.example.friendsapp.Model.LocationListener;
 import com.example.friendsapp.R;
 import com.example.friendsapp.Shared;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,6 +28,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final String LOGTAG = "MAPACTIVITY";
     private int DETAILACTIVITY_INTENT_ID = 1345;
 
     private BEFriend[] friends;
@@ -44,7 +54,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.new_friend:
                 openActivityByFriendId(-1);
                 return true;
@@ -73,6 +83,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().isMyLocationButtonEnabled();
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(friends[0].getHome()));
     }
 

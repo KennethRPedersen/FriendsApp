@@ -84,7 +84,7 @@ public class SQLiteDataAccess implements IDataAccess {
      * @param id
      */
     @Override
-    public void deleteFriend(int id) {
+    public void deleteFriend(long id) {
         db.delete(TABLE_NAME," id = ?", new String[]{id+""});
     }
 
