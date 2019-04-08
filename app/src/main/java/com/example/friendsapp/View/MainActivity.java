@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
         checkPermissions();
 
         lvFriends = this.findViewById(R.id.lvFriends);
-        DataAccessFactory factory = new DataAccessFactory(this);
-        dataAccess = factory.getDataAccessUsing(DataAccessFactory.DataTechnology.SQLite);
+        dataAccess = new DataAccessFactory(this)
+                .getDataAccessUsing(DataAccessFactory.DataTechnology.SQLite);
 
         // GET FRIENDS FROM DATABASE
         friends = new ArrayList<>(dataAccess.getAllFriends());

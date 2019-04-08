@@ -9,12 +9,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.friendsapp.BE.BEFriend;
 import com.example.friendsapp.Data.DataAccessFactory;
 import com.example.friendsapp.Data.IDataAccess;
+import com.example.friendsapp.Model.FileHelper;
 import com.example.friendsapp.Model.IViewCallBack;
 import com.example.friendsapp.Model.LocationListener;
 import com.example.friendsapp.R;
@@ -85,30 +86,11 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Log.d(LOGTAG, "Detail Activity started");
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         setGui(); //Initiates the GUI
         setButtons(); //Makes OnClickListeners on all buttons
-
-        long id = (long) getIntent().getSerializableExtra(Shared.ID_KEY);
-
-        Log.d(LOGTAG, id + "");
-
-        DataAccessFactory factory = new DataAccessFactory(this);
-        dataAccess = factory.getDataAccessUsing(DataAccessFactory.DataTechnology.SQLite);
-
-        if (id > 0) {
-            friend = dataAccess.getFriendById(id);
-            initFields();
-        } else {
-            friend = new BEFriend();
-            iv.setImageResource(R.drawable.picture_placeholder_with_text);
-        }
-
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locListener = new LocationListener(this);
+        getFriend();
         setLocListener();
     }
 
@@ -121,12 +103,28 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.delete_friend:
                 deleteFriend(friend.getId());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Get friend from database from the id in the intent
+     */
+    private void getFriend() {
+        long friendId = (long) getIntent().getSerializableExtra(Shared.ID_KEY);
+        dataAccess = new DataAccessFactory(this)
+                .getDataAccessUsing(DataAccessFactory.DataTechnology.SQLite);
+        if (friendId > 0) {
+            friend = dataAccess.getFriendById(friendId);
+            initFields();
+        } else {
+            friend = new BEFriend();
+            iv.setImageResource(R.drawable.picture_placeholder_with_text);
         }
     }
 
@@ -148,10 +146,9 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         etMail.setText(friend.getEmail());
         etPhone.setText(friend.getPhoneNumber());
         etAddress.setText(friend.getAddress());
-        Log.d(LOGTAG, friend.getImgPath() + "");
-        if (friend.getImgPath() != null){
+        if (friend.getImgPath() != null) {
             iv.setImageURI(Uri.parse(friend.getImgPath()));
-        }else {
+        } else {
             iv.setImageResource(R.drawable.picture_placeholder_with_text);
         }
     }
@@ -194,87 +191,74 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
      * Sets all the on click listeners on the buttons
      */
     private void setButtons() {
-
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setHome();
             }
         });
-
         btnShowMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showOnMap();
             }
         });
-
         btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 makeCall();
             }
         });
-
         btnSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SendSms();
             }
         });
-
         btnMail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMail();
             }
         });
-
         btnWeb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openSite();
             }
         });
-
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveToDB();
             }
         });
-
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cancel();
             }
         });
-
         etBDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openDatePicker();
             }
         });
-
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openCamera();
             }
         });
-
     }
 
     private void openCamera() {
-        mFile = getOutputMediaFile(); // create a file to save the image
+        mFile = FileHelper.getOutputMediaFile(friend); // create a file to save the image
         if (mFile == null) {
             Toast.makeText(this, "Could not create file...", Toast.LENGTH_LONG).show();
             return;
         }
-
-        //com.example.homefolder.example.provider
 
         // create Intent to take a picture
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -283,59 +267,22 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
                 "com.example.friendsapp.example.provider", //(use your app signature + ".provider" )
                 mFile));
 
-        Log.d(LOGTAG, "file uri = " + Uri.fromFile(mFile).toString());
-
         if (intent.resolveActivity(getPackageManager()) != null) {
-            Log.d(LOGTAG, "camera app will be started");
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         } else
             Log.d(LOGTAG, "camera app could NOT be started");
-
     }
 
-    /**
-     * Create a File for saving an image
-     */
-    private File getOutputMediaFile() {
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "Camera01");
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
-        }
-
-        // Create a media file name
-        //String timeStamp = Calendar.getInstance().toString();
-        String postfix = "jpg";
-        String prefix = "IMG";
-
-        File mediaFile = new File(mediaStorageDir.getPath() +
-                File.separator + prefix +
-                friend.getId()
-                + "." + postfix);
-
-        return mediaFile;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(LOGTAG, "OnActivityResult in detail");
-        Log.d(LOGTAG, "Request code: " + requestCode);
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            Log.d(LOGTAG, "Requestcode OK");
-            Log.d(LOGTAG, "ResultCode: " + resultCode);
             if (resultCode == RESULT_OK) {
-                Log.d(LOGTAG, "OnActivityResult ResultCode OK");
-
                 iv.setImageURI(Uri.fromFile(mFile));
                 friend.setImgPath(mFile.getPath());
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Canceled...", Toast.LENGTH_LONG).show();
                 return;
-
             } else
                 Toast.makeText(this, "Picture NOT taken - unknown error...", Toast.LENGTH_LONG).show();
         }
@@ -346,11 +293,8 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
      * On date selected we replace the text in etBDay.
      */
     private void openDatePicker() {
-        // Get Current Date
-        final Calendar c = Calendar.getInstance();
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
+        final Calendar c = Calendar.getInstance(); // Get Current Date
+
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 android.R.style.Theme_Holo_Light_Dialog,
                 new DatePickerDialog.OnDateSetListener() {
@@ -359,14 +303,18 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
                                           int monthOfYear, int dayOfMonth) {
                         etBDay.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
                     }
-                }, mYear, mMonth, mDay);
+                },
+                c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH)
+        );
+
         datePickerDialog.show();
     }
 
     /**
      * returns a Date based on the a dateString written as yyyy-MM-dd
      * the divider can be what ever you want, as long as its the same as one used in the dateString
-     *
      * @param dateString
      * @param divider
      * @return Date
@@ -460,12 +408,11 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
     private void sendMail() {
         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 
-        /* Fill it with Data */
+        //Fill it with Data
         emailIntent.setType("plain/text");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{friend.getEmail()});
 
-
-        /* Send it off to the Activity-Chooser */
+        //Send it off to the Activity-Chooser
         startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
@@ -483,30 +430,28 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
     private void makeCall() {
         Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + friend.getPhoneNumber()));
         startActivity(callIntent);
-
     }
 
     /**
      * Starts a location listener
      */
     private void setLocListener() {
-        Log.d("Location", "Start listening");
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locListener = new LocationListener(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        Log.d(LOGTAG, "running listener");
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locListener);
+        final int UPDATE_TIME = 1000;
+        final int MIN_LOCATION_CHANGED_DISTANCE = 0;
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_TIME, MIN_LOCATION_CHANGED_DISTANCE, locListener);
     }
 
     /**
      * Removes the location listener from the location manager
      */
     private void stopListener() {
-        Log.d("Location", "Stop listening");
-
         if (locListener == null) return;
-
         lm.removeUpdates(locListener);
     }
 
@@ -536,8 +481,6 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         Location loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         LatLng latlng = new LatLng(loc.getLatitude(), loc.getLongitude());
         friend.setHome(latlng);
-        Log.d(LOGTAG, "Home cords set");
-        Log.d(LOGTAG, friend.getHome().toString());
     }
 
     /**
