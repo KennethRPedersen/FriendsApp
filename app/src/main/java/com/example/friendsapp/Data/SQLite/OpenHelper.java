@@ -68,6 +68,8 @@ public class OpenHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        throw new UnsupportedOperationException("onUpgrade in OpenHelper is not implemented yet");
+        db.execSQL("DROP TABLE " + friendsTableName);
+        onCreate(db);
+        //throw new UnsupportedOperationException("onUpgrade in OpenHelper is not implemented yet");
     }
 }

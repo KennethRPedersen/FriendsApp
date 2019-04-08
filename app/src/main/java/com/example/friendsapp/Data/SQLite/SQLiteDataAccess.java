@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SQLiteDataAccess implements IDataAccess {
     private static final String DATABASE_NAME = "friends.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
     private static final String TABLE_NAME = "friend_table";
 
     private SQLiteDatabase db;
