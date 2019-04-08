@@ -115,6 +115,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         etMail.setText(friend.getEmail());
         etPhone.setText(friend.getPhoneNumber());
         etAddress.setText(friend.getAddress());
+        Log.d(LOGTAG, friend.getImgPath() + "");
         if (friend.getImgPath() != null){
             iv.setImageURI(Uri.parse(friend.getImgPath()));
         }
@@ -394,7 +395,8 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
                     , etPhone.getText().toString()
                     , etWeb.getText().toString()
                     , date
-                    , friend.getHome());
+                    , friend.getHome()
+                    , friend.getImgPath());
 
             newFriend.setId(friend.getId());
             dataAccess.addFriend(newFriend);

@@ -2,11 +2,13 @@ package com.example.friendsapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.friendsapp.BE.BEFriend;
@@ -34,9 +36,11 @@ public class FriendAdapter extends ArrayAdapter<BEFriend> {
         BEFriend f = friends.get(position);
 
         TextView name = (TextView) v.findViewById(R.id.txtName);
-        //ImageView favorite = (ImageView) v.findViewById(R.id.favorite);
+
+        ImageView favorite = (ImageView) v.findViewById(R.id.iv);
 
         name.setText(f.getName());
+        favorite.setImageURI(Uri.parse(f.getImgPath()));
 
         return v;
     }
