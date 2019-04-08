@@ -37,11 +37,13 @@ public class FriendAdapter extends ArrayAdapter<BEFriend> {
 
         TextView name = (TextView) v.findViewById(R.id.txtName);
 
-        ImageView favorite = (ImageView) v.findViewById(R.id.iv);
+        ImageView iv = (ImageView) v.findViewById(R.id.iv);
 
         name.setText(f.getName());
         if (f.getImgPath() != null) {
-            favorite.setImageURI(Uri.parse(f.getImgPath()));
+            iv.setImageURI(Uri.parse(f.getImgPath()));
+        } else {
+            iv.setImageResource(R.drawable.placeholder);
         }
         return v;
     }

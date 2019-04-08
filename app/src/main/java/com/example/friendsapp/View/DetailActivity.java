@@ -15,6 +15,9 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -105,6 +108,31 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         setLocListener();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.navigation_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.delete_friend:
+                deleteFriend(friend.getId());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void deleteFriend(long id) {
+        dataAccess.deleteFriend(id);
+        stopListener();
+        setResult(RESULT_OK);
+        finish();
+    }
+
     /**
      * populate edit texts with friends details
      */
@@ -118,6 +146,8 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         Log.d(LOGTAG, friend.getImgPath() + "");
         if (friend.getImgPath() != null){
             iv.setImageURI(Uri.parse(friend.getImgPath()));
+        } else {
+            iv.setImageResource(R.drawable.placeholder);
         }
     }
 
@@ -413,7 +443,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
     private void openSite() {
         String url = friend.getWebsite();
 
-        url = "http://" + url;
+        if (!url.contains("http")) url = "http://" + url;
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(browserIntent);
