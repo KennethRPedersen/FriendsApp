@@ -148,6 +148,7 @@ public class SQLiteDataAccess implements IDataAccess {
         cv.put(TableRow.BIRTHDAY, friend.getBirthdate().getTime());
         cv.put(TableRow.LAT, friend.getHome().latitude);
         cv.put(TableRow.LNG, friend.getHome().longitude);
+        cv.put(TableRow.IMG_PATH, friend.getImgPath());
         return cv;
     }
 
@@ -167,7 +168,8 @@ public class SQLiteDataAccess implements IDataAccess {
                 new LatLng(
                         cursor.getDouble(cursor.getColumnIndex(TableRow.LAT)),
                         cursor.getDouble(cursor.getColumnIndex(TableRow.LNG))
-                )
+                ),
+                cursor.getString(cursor.getColumnIndex(TableRow.IMG_PATH))
         );
         friend.setId(cursor.getLong(cursor.getColumnIndex(TableRow.ID)));
         return friend;

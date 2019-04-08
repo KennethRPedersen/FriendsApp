@@ -12,6 +12,18 @@ public class BEFriend implements Serializable {
     long id = -1;
     Double homeLat = 0.0, homeLng = 0.0;
 
+    public BEFriend(String name, String address, String email, String phoneNumber, String website, Date birthdate, LatLng home, String imgPath) {
+        this.name = name;
+        this.address = address;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.website = website;
+        this.birthdate = birthdate;
+        this.homeLat = home.latitude;
+        this.homeLng = home.longitude;
+        this.imgPath = imgPath;
+    }
+
     public BEFriend(String name, String address, String email, String phoneNumber, String website, Date birthdate, LatLng home) {
         this.name = name;
         this.address = address;

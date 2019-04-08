@@ -10,4 +10,5 @@ class TableRow {
     public static final String BIRTHDAY = "birthdate";
     public static final String LAT = "lat";
     public static final String LNG = "lng";
+    public static final String IMG_PATH = "imgPath";
 }

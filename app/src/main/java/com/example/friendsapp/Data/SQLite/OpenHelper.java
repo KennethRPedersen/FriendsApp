@@ -42,7 +42,8 @@ public class OpenHelper extends SQLiteOpenHelper {
                 + TableRow.WEBSITE + " TEXT, "
                 + TableRow.BIRTHDAY + " BIGINT, "
                 + TableRow.LAT + " DOUBLE, "
-                + TableRow.LNG + " DOUBLE)");
+                + TableRow.LNG + " DOUBLE, "
+                + TableRow.IMG_PATH + " TEXT)");
     }
 
     /**
