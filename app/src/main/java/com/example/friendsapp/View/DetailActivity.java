@@ -411,7 +411,12 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
      * Opens the default browser with a website from the friend
      */
     private void openSite() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(friend.getWebsite()));
+
+        String url = friend.getWebsite();
+
+        url = "http://" + url;
+
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(browserIntent);
     }
 
