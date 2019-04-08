@@ -40,8 +40,9 @@ public class FriendAdapter extends ArrayAdapter<BEFriend> {
         ImageView favorite = (ImageView) v.findViewById(R.id.iv);
 
         name.setText(f.getName());
-        favorite.setImageURI(Uri.parse(f.getImgPath()));
-
+        if (f.getImgPath() != null) {
+            favorite.setImageURI(Uri.parse(f.getImgPath()));
+        }
         return v;
     }
 }

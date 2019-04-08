@@ -279,7 +279,8 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
 
         File mediaFile = new File(mediaStorageDir.getPath() +
                 File.separator + prefix +
-                "." + postfix);
+                friend.getId()
+                + "." + postfix);
 
         return mediaFile;
     }
