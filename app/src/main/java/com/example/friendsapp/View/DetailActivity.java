@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -85,6 +86,8 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         Log.d(LOGTAG, "Detail Activity started");
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         setGui(); //Initiates the GUI
         setButtons(); //Makes OnClickListeners on all buttons
