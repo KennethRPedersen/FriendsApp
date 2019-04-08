@@ -98,6 +98,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
             initFields();
         } else {
             friend = new BEFriend();
+            iv.setImageResource(R.drawable.picture_placeholder_with_text);
         }
 
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -118,6 +119,8 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         Log.d(LOGTAG, friend.getImgPath() + "");
         if (friend.getImgPath() != null){
             iv.setImageURI(Uri.parse(friend.getImgPath()));
+        }else {
+            iv.setImageResource(R.drawable.picture_placeholder_with_text);
         }
     }
 
