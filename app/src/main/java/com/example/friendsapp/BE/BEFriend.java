@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.sql.Date;
 
 public class BEFriend implements Serializable {
-    String name, address, email, phoneNumber, website;
+    String name, address, email, phoneNumber, website, imgPath;
     Date birthdate;
     long id = -1;
     Double homeLat = 0.0, homeLng = 0.0;
@@ -89,5 +89,13 @@ public class BEFriend implements Serializable {
     public void setHome(LatLng home) {
         this.homeLat = home.latitude;
         this.homeLng = home.longitude;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 }

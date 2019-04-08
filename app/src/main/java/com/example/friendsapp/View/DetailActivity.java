@@ -2,8 +2,6 @@ package com.example.friendsapp.View;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.app.DialogFragment;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -36,15 +34,14 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 
 public class DetailActivity extends AppCompatActivity implements IViewCallBack {
 
     static final String LOGTAG = "DETAILACTIVITY";
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
     //EditText
     EditText etName;
@@ -109,7 +106,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
     }
 
     /**
-        populate edit texts with friends details
+     * populate edit texts with friends details
      */
     private void initFields() {
         etName.setText(friend.getName());
@@ -118,11 +115,14 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         etMail.setText(friend.getEmail());
         etPhone.setText(friend.getPhoneNumber());
         etAddress.setText(friend.getAddress());
+        if (friend.getImgPath() != null){
+            iv.setImageURI(Uri.parse(friend.getImgPath()));
+        }
     }
 
     /**
-        binds the ui
-    */
+     * binds the ui
+     */
     private void setGui() {
         //EditText
         etName = findViewById(R.id.etName);
@@ -155,8 +155,8 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
 
 
     /**
-        Sets all the on click listeners on the buttons
-    */
+     * Sets all the on click listeners on the buttons
+     */
     private void setButtons() {
 
         btnHome.setOnClickListener(new View.OnClickListener() {
@@ -244,14 +244,14 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(
                 this,
-                "com.example.homefolder.example.provider", //(use your app signature + ".provider" )
+                "com.example.friendsapp.example.provider", //(use your app signature + ".provider" )
                 mFile));
 
         Log.d(LOGTAG, "file uri = " + Uri.fromFile(mFile).toString());
 
         if (intent.resolveActivity(getPackageManager()) != null) {
             Log.d(LOGTAG, "camera app will be started");
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         } else
             Log.d(LOGTAG, "camera app could NOT be started");
 
@@ -272,15 +272,36 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
         }
 
         // Create a media file name
-        String timeStamp = Calendar.getInstance().toString();
+        //String timeStamp = Calendar.getInstance().toString();
         String postfix = "jpg";
         String prefix = "IMG";
 
         File mediaFile = new File(mediaStorageDir.getPath() +
                 File.separator + prefix +
-                "_" + timeStamp + "." + postfix);
+                "." + postfix);
 
         return mediaFile;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(LOGTAG, "OnActivityResult in detail");
+        Log.d(LOGTAG, "Request code: " + requestCode);
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            Log.d(LOGTAG, "Requestcode OK");
+            Log.d(LOGTAG, "ResultCode: " + resultCode);
+            if (resultCode == RESULT_OK) {
+                Log.d(LOGTAG, "OnActivityResult ResultCode OK");
+
+                iv.setImageURI(Uri.fromFile(mFile));
+                friend.setImgPath(mFile.getPath());
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Canceled...", Toast.LENGTH_LONG).show();
+                return;
+
+            } else
+                Toast.makeText(this, "Picture NOT taken - unknown error...", Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
@@ -479,6 +500,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
 
     /**
      * Method form the LocationListener to see if its running
+     *
      * @param location
      */
     @Override
