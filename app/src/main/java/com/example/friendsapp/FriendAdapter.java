@@ -43,7 +43,7 @@ public class FriendAdapter extends ArrayAdapter<BEFriend> {
         if (f.getImgPath() != null) {
             iv.setImageURI(Uri.parse(f.getImgPath()));
         } else {
-            iv.setImageResource(R.drawable.placeholder);
+            iv.setImageResource(R.drawable.picture_placeholder);
         }
         return v;
     }
