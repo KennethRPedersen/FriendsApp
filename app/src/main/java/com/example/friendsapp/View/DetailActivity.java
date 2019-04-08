@@ -411,7 +411,6 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
      * Opens the default browser with a website from the friend
      */
     private void openSite() {
-
         String url = friend.getWebsite();
 
         url = "http://" + url;
@@ -447,7 +446,7 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
      * Makes a call the the number in the friend object
      */
     private void makeCall() {
-        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + friend.getPhoneNumber()));
+        Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + friend.getPhoneNumber()));
         startActivity(callIntent);
 
     }
