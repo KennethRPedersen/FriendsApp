@@ -130,8 +130,9 @@ public class DetailActivity extends AppCompatActivity implements IViewCallBack {
     private void deleteFriend(long id) {
         dataAccess.deleteFriend(id);
         stopListener();
-        setResult(RESULT_OK);
-        finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     /**
